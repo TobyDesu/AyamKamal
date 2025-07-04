@@ -33,41 +33,24 @@
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
 
 <!-- Session Message using SweetAlert -->
-<!-- SweetAlert2 (newer version) -->
+<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     <?php if (isset($_SESSION['status'])): ?>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                title: '<?php echo $_SESSION['status']; ?>',
-                icon: '<?php echo $_SESSION['status_code']; ?>',
-                confirmButtonText: 'OK'
-            });
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            title: '<?= $_SESSION['status']; ?>',
+            icon: '<?= $_SESSION['status_code']; ?>',
+            confirmButtonText: 'OK'
         });
-        <?php
+    });
+    <?php
         unset($_SESSION['status']);
         unset($_SESSION['status_code']);
-        ?>
+    ?>
     <?php endif; ?>
 </script>
-
-<!-- Session Message using Alertify -->
-<?php
-/*
-if (isset($_SESSION['status']) && $_SESSION['status'] != '') {
-
-?>
-    <script>
-        alertify.set('notifier', 'position', 'top-center');
-        alertify.success('<?php echo $_SESSION['status']; ?>');
-    </script>
-<?php
-    unset($_SESSION['status']);
-}
-*/
-?>
-
 
 </body>
 
