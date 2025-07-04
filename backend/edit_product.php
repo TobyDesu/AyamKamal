@@ -5,7 +5,7 @@ include('db.php');
 if (isset($_GET['productID'])) {
     $productID = $_GET['productID'];
 
-    // Handle form submission before output
+    // Handle form submission
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name = $_POST['name'];
         $description = $_POST['description'];
@@ -13,9 +13,17 @@ if (isset($_GET['productID'])) {
         $stockQuantity = intval($_POST['stockQuantity']);
         $grade = $_POST['grade'];
 
+        $updateImage = "";
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $imgName = basename($_FILES['image']['name']);
+            $imgPath = 'uploads/products/' . $imgName;
+            move_uploaded_file($_FILES['image']['tmp_name'], $imgPath);
+            $updateImage = ", image = :image";
+        }
+
         $updateSql = "UPDATE product 
                       SET name = :name, description = :description, price = :price,
-                          stockQuantity = :stockQuantity, grade = :grade
+                          stockQuantity = :stockQuantity, grade = :grade $updateImage
                       WHERE productID = :productID";
 
         $stmt = oci_parse($conn, $updateSql);
@@ -25,6 +33,9 @@ if (isset($_GET['productID'])) {
         oci_bind_by_name($stmt, ':stockQuantity', $stockQuantity);
         oci_bind_by_name($stmt, ':grade', $grade, 20);
         oci_bind_by_name($stmt, ':productID', $productID);
+        if ($updateImage) {
+            oci_bind_by_name($stmt, ':image', $imgName, 100);
+        }
 
         if (oci_execute($stmt)) {
             oci_commit($conn);
@@ -41,7 +52,7 @@ if (isset($_GET['productID'])) {
         exit;
     }
 
-    // Fetch product data for form display
+    // Fetch product data
     $selectSql = "SELECT * FROM product WHERE productID = :productID";
     $stmt = oci_parse($conn, $selectSql);
     oci_bind_by_name($stmt, ':productID', $productID);
@@ -69,7 +80,7 @@ if (isset($_GET['productID'])) {
 
                 <div class="card-body">
                     <?php if ($product): ?>
-                        <form method="POST">
+                        <form method="POST" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label class="form-label">Product Name</label>
                                 <input type="text" class="form-control" name="name" value="<?= htmlspecialchars($product['NAME']); ?>" required>
@@ -93,6 +104,16 @@ if (isset($_GET['productID'])) {
                             <div class="mb-3">
                                 <label class="form-label">Grade</label>
                                 <input type="text" class="form-control" name="grade" value="<?= htmlspecialchars($product['GRADE']); ?>">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Change Image (Optional)</label>
+                                <input type="file" name="image" class="form-control">
+                                <?php if (!empty($product['IMAGE'])): ?>
+                                    <div class="mt-2">
+                                        <img src="uploads/products/<?= htmlspecialchars($product['IMAGE']); ?>" width="100" height="100" style="object-fit:cover;">
+                                    </div>
+                                <?php endif; ?>
                             </div>
 
                             <div class="mb-3">
