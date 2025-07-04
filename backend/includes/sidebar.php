@@ -23,11 +23,19 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white <?php echo ($current_page == 'insert_product.php') ? 'bg-gradient-primary' : ''; ?>" href="insert_product.php">
+                    <a class="nav-link text-white <?php echo ($current_page == 'products.php') ? 'bg-gradient-primary' : ''; ?>" href="products.php">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-symbols-rounded opacity-10">table_view</i>
                         </div>
-                        <span class="nav-link-text ms-1">Insert Product</span>
+                        <span class="nav-link-text ms-1">Product Page</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white <?php echo ($current_page == 'reports.php') ? 'bg-gradient-primary' : ''; ?>" href="reports.php">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-symbols-rounded opacity-10">table_view</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Report Page</span>
                     </a>
                 </li>
             </ul>
